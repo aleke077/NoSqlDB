@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/main.html">
+<div layout:fragment="mainContainer">
+    <form th:action="@{'/admin'}" method="get">
+        <div class="row mt-5">
+            <div class="col-3">
+                Name:
+            </div>
+            <div class="col-2">
+                City:
+            </div>
+            <div class="col-3">
+                UCL Titles:
+            </div>
+            <div class="col-3">
+                League Titles:
+            </div>
+            <div class="col-1">
+
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-3">
+                <input type="text" name="name" class="form-control form-control-sm" th:value = "${#request.getParameter('name')!=null?#request.getParameter('name'):''}">
+            </div>
+            <div class="col-2">
+                <select class="form-control form-control-sm" name="city_id">
+                    <option value="0">All Cities</option>
+                    <option th:each="ct: ${cities}" th:text = "${ct.name}" th:value="${ct.id}" th:selected="${#request.getParameter('city_id')}==${ct.id}"></option>
+                </select>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-6">
+                        <input type="number" class="form-control form-control-sm" name="ulc_from" th:value="${#request.getParameter('ulc_from')}">
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control form-control-sm" name="ulc_to" th:value="${#request.getParameter('ulc_to')}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-6">
+                        <input type="number" class="form-control form-control-sm" name="league_from" th:value="${#request.getParameter('league_from')}">
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control form-control-sm" name="league_to" th:value="${#request.getParameter('league_to')}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-primary btn-sm">SEARCH</button>
+            </div>
+        </div>
+    </form>
+    <div class="row mt-5">
+        <div class="col-12">
+            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addClubModal">
+                + Add Club
+            </button>
+            <div class="modal fade" id="addClubModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Add New Club</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form th:action="@{'/addclub'}" method="post">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>NAME : </label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>CITY : </label>
+                                    <select class="form-control" name="city_id">
+                                        <option th:each="ct: ${cities}" th:text = "${ct.name}" th:value="${ct.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>UCL TITLES : </label>
+                                    <input type="number" class="form-control" name="ucl_titles" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>LEAGUE TITLES : </label>
+                                    <input type="number" class="form-control" name="league_titles" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-success">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>CITY</th>
+                        <th>UCL TITLES</th>
+                        <th>LEAGUE TITLES</th>
+                        <th width="10%;">DETAILS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cl: ${clubs}">
+                        <td th:text="${cl.id}"></td>
+                        <td th:text="${cl.name}"></td>
+                        <td th:text="${cl.city.name}"></td>
+                        <td th:text="${cl.championsLeagueTitles}"></td>
+                        <td th:text="${cl.leagueTitles}"></td>
+                        <td><a th:href="@{'/details/'+${cl.id}}" class="btn btn-primary btn-sm">DETAILS</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</html>
